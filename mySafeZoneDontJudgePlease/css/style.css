@@ -1,0 +1,22 @@
+
+
+.parent {
+
+    margin: 10% auto;
+
+    border: 1px solid black;
+
+    background-color: black;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:10px
+}
+
+
+#items-1, #items-2, #items-3, #items-4, #items-5, #items-6, #items-7, #items-8, #items-9 {
+
+    background-color: white;
+    width: 100%;
+    height: 100px;
+
+}
