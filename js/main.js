@@ -185,9 +185,9 @@ let scanner = {
 };
 
 
-let imageSrc = ['./GAProject-MGS-Game/assets/enemy.png', './GAProject-MGS-Game/assets/char.png', './GAProject-MGS-Game/assets/radar.png',
-                 './GAProject-MGS-Game/assets/radar2.png', './GAProject-MGS-Game/assets/codec.png', './GAProject-MGS-Game/assets/start.png',
-                  './GAProject-MGS-Game/assets/gameover.png'];
+let imageSrc = ['/assets/enemy.png', '/assets/char.png', '/assets/radar.png',
+                 '/assets/radar2.png', './assets/codec.png', './assets/start.png',
+                  '/assets/gameover.png'];
 
 let image = [];
 
