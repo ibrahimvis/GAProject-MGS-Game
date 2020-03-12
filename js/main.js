@@ -185,9 +185,9 @@ let scanner = {
 };
 
 
-let imageSrc = ['/assets/enemy.png', '/assets/char.png', '/assets/radar.png',
-                 '/assets/radar2.png', './assets/codec.png', './assets/start.png',
-                  '/assets/gameover.png'];
+let imageSrc = ['./../assets/enemy.png', './../assets/char.png', './../assets/radar.png',
+                 './../assets/radar2.png', './../assets/codec.png', './../assets/start.png',
+                  './../assets/gameover.png'];
 
 let image = [];
 
