@@ -44,7 +44,7 @@ MainEnemyObj = {
         esize: 64,
         enemyPath: [], indexOfEnemy: 0,
         enemyCollision: function () {
-            if ((player.y - MainEnemyObj.en2.y) <= 54 && (player.y - MainEnemyObj.en2.y) >= -5) {
+            if ((player.y - MainEnemyObj.en2.y) <= 54 && (player.y - MainEnemyObj.en2.y) >= -21) {
                 if ((player.x - MainEnemyObj.en2.x) <= 38 && (player.x - MainEnemyObj.en2.x) >= -25) {
                     if (endGame()) {
                         window.cancelAnimationFrame(render);
@@ -69,7 +69,7 @@ MainEnemyObj = {
         enemyPath: [], indexOfEnemy: 0,
         enemyCollision: function () {
             if ((player.y - MainEnemyObj.en3.y) <= 30 && (player.y - MainEnemyObj.en3.y) >= 0) {
-                if ((player.x - MainEnemyObj.en3.x) <= 48 && (player.x - MainEnemyObj.en3.x) >= -5) {
+                if ((player.x - MainEnemyObj.en3.x) <= 48 && (player.x - MainEnemyObj.en3.x) >= -28) {
                     if (endGame()) {
                         window.cancelAnimationFrame(render);
                         end = true;
@@ -84,33 +84,31 @@ MainEnemyObj = {
 
     en4: {
         x: 520,
-        y: 310,
+        y: 320,
         speed: 5,
         enemycolor: 0,
         enemyeye: 64,
         dirX: 0,
         dirY: 0,
         move: 1,
-        esize: 48,
+        esize: 64,
         enemyPath: [], indexOfEnemy: 0,
         enemyCollision: function () {
-            if ((player.y - MainEnemyObj.en4.y) <= 30 && (player.y - MainEnemyObj.en4.y) >= 0) {
-                if ((player.x - MainEnemyObj.en4.x) <= 48 && (player.x - MainEnemyObj.en4.x) >= -5) {
+            if ((player.y - this.y) <= 54 && (player.y - this.y) >= 0) {
+                if ((player.x - this.x) <= 38 && (player.x - this.x) >= -25) {
                     if (endGame()) {
                         window.cancelAnimationFrame(render);
                         end = true;
                         return;
                     }
-                    console.log(true);
-
                 }
             }
         }
     },
 
-    cam: {
-        x: 280,
-        y: 295,
+    en5: {
+        x: 210,
+        y: 310,
         speed: 5,
         enemycolor: 0,
         enemyeye: 96,
@@ -118,11 +116,10 @@ MainEnemyObj = {
         dirY: 0,
         move: 1,
         esize: 48,
-        esizey: 106,
-        camPath: [], indexOfCam: 0,
+        enemyPath: [], indexOfEnemy: 0,
         enemyCollision: function () {
-            if ((player.y - MainEnemyObj.cam.y) <= 80 && (player.y - MainEnemyObj.cam.y) >= 0) {
-                if ((player.x - MainEnemyObj.cam.x) <= 45 && (player.x - MainEnemyObj.cam.x) >= 0) {
+            if ((player.y - this.y) <= 30 && (player.y - this.y) >= 0) {
+                if ((player.x - this.x) <= 48 && (player.x - this.x) >= -21) {
                     if (endGame()) {
                         window.cancelAnimationFrame(render);
                         end = true;
@@ -131,7 +128,6 @@ MainEnemyObj = {
                 }
             }
         }
-
     }
 };
 
@@ -155,11 +151,11 @@ canvas.height = 400;
 document.body.appendChild(canvas);
 
 
-var scanner = {
+let scanner = {
     x: canvas.width / 2,
     y: canvas.height - 60,
     vy: 1,
-    radiusX: 120,
+    radiusX: 170,
     radiusY: 60,
     color: '#FFFFE0',
     drawEllipse: function () {
@@ -168,20 +164,20 @@ var scanner = {
         ctx.closePath();
         ctx.fillStyle = this.color;
         ctx.fill();
-        if (scanner.y + scanner.vy > 70 && !scannerTop) {
+        if (scanner.y + scanner.vy > 120 && !scannerTop) {
             //console.log(scanner.y + scanner.vy);
 
             scanner.y -= scanner.vy;
 
-            if (scanner.y + scanner.vy <= 72) {
+            if (scanner.y + scanner.vy <= 120) {
                 scannerTop = !scannerTop;
             }
-        } else if (scanner.y + scanner.vy <= canvas.height - 70 && scannerTop) {
+        } else if (scanner.y + scanner.vy <= 290 && scannerTop) {
             scanner.y += scanner.vy;
 
             //console.log(scanner.y + scanner.vy);
 
-            if (scanner.y + scanner.vy >= 330) {
+            if (scanner.y + scanner.vy >= 290) {
                 scannerTop = !scannerTop;
             }
         }
@@ -189,7 +185,9 @@ var scanner = {
 };
 
 
-let imageSrc = ['../assets/enemy.png', '../assets/char.png', '../assets/radar.png'];
+let imageSrc = ['../assets/enemy.png', '../assets/char.png', '../assets/radar.png',
+                 '../assets/radar2.png', '../assets/codec.png', '../assets/start.png',
+                  '../assets/gameover.png'];
 
 let image = [];
 
@@ -206,10 +204,7 @@ var imagesLoadedCounter = 0;
 for (var index = 0; index < image.length; index++) {
     image[index].onload = function () {
         imagesLoadedCounter++;
-        //this.ready = true;
-        if (index == image.length - 1) {
 
-        }
         if (image.length == imagesLoadedCounter) {
             playGame();
         }
@@ -223,15 +218,24 @@ let keyclick = {};
 let loadMap2 = false;
 let end = false;
 let scannerTop = false;
-var counterIndex = 0;
+
+let startWindow = true; // first window
+let preGameCodec = false; // second window
+
+let crossVar = false;
+
+let codecIndex = 0;
+
+let firstLap = false;
+let secondLap = false;
+
 //let MainEnemyObj.en1.enemyPath = [] //x = 50; y : 101 - 210
 
 firstEnemyPath();
 secondEnemyPath();
 thirdEnemyPath();
 forthEnemyPath();
-
-fCamPath();
+fifthEnemyPath();
 
 function k(e) {
     keyclick[e.keyCode] = true;
@@ -258,6 +262,9 @@ function k(e) {
     // }
 
     move(keyclick);
+
+    // if (loadMap2)
+    //     map2Laptop(keyclick);
 }
 
 document.addEventListener('keydown', k, false);
@@ -266,83 +273,162 @@ document.addEventListener('keyup', function (e) {
     delete keyclick[e.keyCode];
 }, false);
 
+document.addEventListener('click', nextCodec, false);
+
+function nextCodec() {
+
+    if (startWindow) {
+        startWindow = false;
+        preGameCodec = true;
+    } else {
+        codecIndex++;
+    }
+}
+
 function randomizeNumber(num) {
     return Math.floor(Math.random() * num);
 }
 
 function playGame() {
 
-    if (cross()) {
-        if (document.removeEventListener) {
-            document.removeEventListener('keydown', k)
+
+    if (startWindow) {
+        ctx.drawImage(image[5], 0, 0);
+    }
+
+    else if (preGameCodec) {
+        codec();
+    }
+
+    else if (loadMap2) {
+        ctx.drawImage(image[3], 0, 0);
+
+        if (!end) {
+            renderMap2();
+        } else {
+
+            if (firstLap && secondLap) {
+
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.font = 'bolder 15px Courier New';
+                ctx.fillStyle = 'white';
+                ctx.fillText('YOU WIN NO MORE HOMEWORKS GO HOME AND SLEEP!', 100, canvas.height / 2);
+
+                window.cancelAnimationFrame(renderMap2);
+                return;
+            }
+
+            endGame();
+            window.cancelAnimationFrame(renderMap2);
+            return;
         }
-
-        loadMap2 = true;
     }
 
-    if (loadMap2) {
-        renderMap2();
-    }
     else {
 
-        setTimeout(function () {
-            // if (enemy.y < canvas.height / 2 + 10) {
-            //     enemy.dirY = enemy.speed = randomizeNumber(2);
-            //     //console.log(100 - (-1));
-            //     enemy.y += enemy.dirY;
-            //     //console.log('(' + enemy.x + ', ' + enemy.y + ')');
+        if (!end) {
+            setTimeout(function () {
+                // if (enemy.y < canvas.height / 2 + 10) {
+                //     enemy.dirY = enemy.speed = randomizeNumber(2);
+                //     //console.log(100 - (-1));
+                //     enemy.y += enemy.dirY;
+                //     //console.log('(' + enemy.x + ', ' + enemy.y + ')');
 
-            // }
+                // }
 
 
-            // var len = (210 - 101) * 2;
+                // var len = (210 - 101) * 2;
 
-            // //enmey.x = 50;////////////////////////////////////////////////////////
-            MainEnemyObj.en1.y = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][1];
-            MainEnemyObj.en1.x = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][0];
-            MainEnemyObj.en1.enemyeye = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][2];
-            // console.log();
+                // //enmey.x = 50;////////////////////////////////////////////////////////
+                MainEnemyObj.en1.y = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][1];
+                MainEnemyObj.en1.x = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][0];
+                MainEnemyObj.en1.enemyeye = MainEnemyObj.en1.enemyPath[MainEnemyObj.en1.indexOfEnemy][2];
+                // console.log();
 
-            if (MainEnemyObj.en1.indexOfEnemy < MainEnemyObj.en1.enemyPath.length - 1) {
-                MainEnemyObj.en1.indexOfEnemy++;
+                if (MainEnemyObj.en1.indexOfEnemy < MainEnemyObj.en1.enemyPath.length - 1) {
+                    MainEnemyObj.en1.indexOfEnemy++;
+                }
+                else {
+                    MainEnemyObj.en1.indexOfEnemy = 0;
+                }
+
+                ////////////////////////////////////////////////////////
+
+                MainEnemyObj.en2.y = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][1];
+                MainEnemyObj.en2.x = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][0];
+                MainEnemyObj.en2.enemyeye = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][2];
+                // console.log();
+
+                if (MainEnemyObj.en2.indexOfEnemy < MainEnemyObj.en2.enemyPath.length - 1) {
+                    MainEnemyObj.en2.indexOfEnemy++;
+                }
+                else {
+                    MainEnemyObj.en2.indexOfEnemy = 0;
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////
+
+                MainEnemyObj.en3.y = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][1];
+                MainEnemyObj.en3.x = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][0];
+                MainEnemyObj.en3.enemyeye = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][2];
+                // console.log();
+
+                if (MainEnemyObj.en3.indexOfEnemy < MainEnemyObj.en3.enemyPath.length - 1) {
+                    MainEnemyObj.en3.indexOfEnemy++;
+                }
+                else {
+                    MainEnemyObj.en3.indexOfEnemy = 0;
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////
+
+                MainEnemyObj.en4.y = MainEnemyObj.en4.enemyPath[MainEnemyObj.en4.indexOfEnemy][1];
+                MainEnemyObj.en4.x = MainEnemyObj.en4.enemyPath[MainEnemyObj.en4.indexOfEnemy][0];
+                MainEnemyObj.en4.enemyeye = MainEnemyObj.en4.enemyPath[MainEnemyObj.en4.indexOfEnemy][2];
+                // console.log();
+
+                if (MainEnemyObj.en4.indexOfEnemy < MainEnemyObj.en4.enemyPath.length - 1) {
+                    MainEnemyObj.en4.indexOfEnemy++;
+                }
+                else {
+                    MainEnemyObj.en4.indexOfEnemy = 0;
+                }
+
+
+                ////////////////////////////////////////////////////////////////////////////////////
+
+                MainEnemyObj.en5.y = MainEnemyObj.en5.enemyPath[MainEnemyObj.en5.indexOfEnemy][1];
+                MainEnemyObj.en5.x = MainEnemyObj.en5.enemyPath[MainEnemyObj.en5.indexOfEnemy][0];
+                MainEnemyObj.en5.enemyeye = MainEnemyObj.en5.enemyPath[MainEnemyObj.en5.indexOfEnemy][2];
+                // console.log();
+
+                if (MainEnemyObj.en5.indexOfEnemy < MainEnemyObj.en5.enemyPath.length - 1) {
+                    MainEnemyObj.en5.indexOfEnemy++;
+                }
+                else {
+                    MainEnemyObj.en5.indexOfEnemy = 0;
+                }
+
+
+
+            }, 2000);
+
+            ctx.drawImage(image[2], 0, 0);
+
+            render();
+        }
+
+        crossVar = true;
+
+        if (crossVar) {
+            if (cross()) {
+                crossVar = false;
+                loadMap2 = true;
             }
-            else {
-                MainEnemyObj.en1.indexOfEnemy = 0;
-            }
+        }
 
-            ////////////////////////////////////////////////////////
-
-            MainEnemyObj.en2.y = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][1];
-            MainEnemyObj.en2.x = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][0];
-            MainEnemyObj.en2.enemyeye = MainEnemyObj.en2.enemyPath[MainEnemyObj.en2.indexOfEnemy][2];
-            // console.log();
-
-            if (MainEnemyObj.en2.indexOfEnemy < MainEnemyObj.en2.enemyPath.length - 1) {
-                MainEnemyObj.en2.indexOfEnemy++;
-            }
-            else {
-                MainEnemyObj.en2.indexOfEnemy = 0;
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////
-
-            MainEnemyObj.en3.y = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][1];
-            MainEnemyObj.en3.x = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][0];
-            MainEnemyObj.en3.enemyeye = MainEnemyObj.en3.enemyPath[MainEnemyObj.en3.indexOfEnemy][2];
-            // console.log();
-
-            if (MainEnemyObj.en3.indexOfEnemy < MainEnemyObj.en3.enemyPath.length - 1) {
-                MainEnemyObj.en3.indexOfEnemy++;
-            }
-            else {
-                MainEnemyObj.en3.indexOfEnemy = 0;
-            }
-
-        }, 2000);
-
-        ctx.drawImage(image[2], 0, 0)
-
-        render();
     }
 
     window.requestAnimationFrame(playGame);
@@ -360,13 +446,14 @@ function move(keyclick) {
     if (player.x < 0) { player.x = 0; }
     if (player.y < 0) { player.y = 0; }
 
-
-    collisionMap1();
-
+    if (!loadMap2) {
+        collisionMap1();
+        render();
+    }
 
     //console.log(player.x + " " + player.y);
 
-    render();
+
 }
 
 function render() {
@@ -386,8 +473,9 @@ function render() {
     MainEnemyObj.en2.enemyCollision();
     MainEnemyObj.en3.enemyCollision();
     MainEnemyObj.en4.enemyCollision();
+    MainEnemyObj.en5.enemyCollision();
 
-    MainEnemyObj.cam.enemyCollision();
+    //MainEnemyObj.cam.enemyCollision();
     //console.log(player.x - MainEnemyObj.cam.x);
 
     // if (!condition) {
@@ -452,45 +540,56 @@ function render() {
     //console.log(player.x - enemy.x);
 
 
-
-    // scanner.drawEllipse();
-
-    // //  scanner.y -= scanner.vy;
-
-    // var k = (Math.pow(((player.x) - scanner.x), 2) / Math.pow(scanner.radiusX, 2))
-    //     + (Math.pow((player.y - scanner.y), 2) / Math.pow(scanner.radiusY, 2));
-
-    // if (k <= 1) {
-    //     if (endGame()) {
-    //         window.cancelAnimationFrame(render);
-    //         end = true;
-    //         return;
-
-    //     }
-    // }
-
-
-
-
     ctx.drawImage(image[0], 0, MainEnemyObj.en1.enemyeye, 32, 32, MainEnemyObj.en1.x, MainEnemyObj.en1.y, MainEnemyObj.en1.esize, MainEnemyObj.en1.esize);
     ctx.drawImage(image[0], 0, MainEnemyObj.en2.enemyeye, 32, 32, MainEnemyObj.en2.x, MainEnemyObj.en2.y, MainEnemyObj.en2.esize, MainEnemyObj.en2.esize);
     ctx.drawImage(image[0], 0, MainEnemyObj.en3.enemyeye, 32, 32, MainEnemyObj.en3.x, MainEnemyObj.en3.y, MainEnemyObj.en3.esize, MainEnemyObj.en3.esize);
     ctx.drawImage(image[0], 0, MainEnemyObj.en4.enemyeye, 32, 32, MainEnemyObj.en4.x, MainEnemyObj.en4.y, MainEnemyObj.en4.esize, MainEnemyObj.en4.esize);
+    ctx.drawImage(image[0], 0, MainEnemyObj.en5.enemyeye, 32, 32, MainEnemyObj.en5.x, MainEnemyObj.en5.y, MainEnemyObj.en5.esize, MainEnemyObj.en5.esize);
 
-    ctx.drawImage(image[0], 0, MainEnemyObj.cam.enemyeye, 32, 32, MainEnemyObj.cam.x, MainEnemyObj.cam.y, MainEnemyObj.cam.esize, MainEnemyObj.cam.esizey);
+    //ctx.drawImage(image[0], 0, MainEnemyObj.cam.enemyeye, 32, 32, MainEnemyObj.cam.x, MainEnemyObj.cam.y, MainEnemyObj.cam.esize, MainEnemyObj.cam.esizey);
 
     ctx.drawImage(image[1], 0, player.pacdir, 32, 32, player.x, player.y, 32, 32);
-    ctx.font = '20px fantasy';
-    ctx.fillStyle = 'white';
-    ctx.fillText('Score: ' + score, 20, 20);
+    // ctx.font = '20px fantasy';
+    // ctx.fillStyle = 'white';
+    // ctx.fillText('Score: ' + score, 20, 20);
 
-    if (69 in keyclick) {
-        ctx.beginPath();
-        ctx.strokeStyle = 'green'
-        ctx.lineWidth = 4;
-        ctx.moveTo((canvas.width + 96) / 2, 0);
-        ctx.lineTo((canvas.width + 96) / 2 + 40, 40);
-        ctx.stroke();
+
+}
+
+function codec() {
+    ctx.drawImage(image[4], 0, 0);
+    ctx.font = 'bolder 15px Courier New';
+    ctx.fillStyle = 'white';
+    if (codecIndex == 0) {
+        ctx.fillText("The general assembly facility on Shadow Moses Island in Alaska’s", 20, 300);
+        ctx.fillText("captured by Next Generation Special Forces ", 80, 320);
+        ctx.fillText("led by members of FOX-HOUND (Ebere, and Atheer).", 60, 340);
+        ctx.fillText("click to view next messsage.", 350, 390);
+    }
+
+    else if (codecIndex == 1) {
+        ctx.fillText("The FOX-HOUND have secured hundreds of new homeworks", 60, 300);
+        ctx.fillText("they’re demanding the student's to turn over", 100, 320);
+        ctx.fillText("the remains of previous homeworks", 140, 340);
+        ctx.fillText("click to view next messsage.", 350, 390);
+    }
+
+    else if (codecIndex == 2) {
+        ctx.fillText("They warn that if their demands are not met", 100, 300);
+        ctx.fillText("within 24 hours, they’ll launch new HOMEWORKS.", 95, 330);
+        ctx.fillText("click to view next messsage.", 350, 390);
+    }
+
+    else if (codecIndex == 3) {
+        ctx.fillText("Your top priority now is to destroy Fox-Hounds Gears,", 70, 300);
+        ctx.fillText("especially the laptops itself. Sorry to lay it all in your lap", 15, 320);
+        ctx.fillText("but you're all I've got", 180, 340);
+        ctx.fillText("click to start the game.", 350, 390);
+    }
+
+    else {
+        preGameCodec = !preGameCodec;
+        document.removeEventListener('click', nextCodec)
     }
 }
 
@@ -498,13 +597,18 @@ function cross() {
     if (player.x >= ((canvas.width - 50) / 2) && player.x <= ((canvas.width) / 2) + 45) {
         if (player.y >= 0 && player.y <= 10) {
             ///alert('kjashdkjh');
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white';
-            ctx.fillText('Score: ' + score, (canvas.width - 100) / 2, (canvas.height - 20) / 2);
+            // ctx.fillStyle = 'black';
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillStyle = 'white';
+            // ctx.fillText('Score: ' + score, (canvas.width - 100) / 2, (canvas.height - 20) / 2);
+            player.x = 10;
+            player.y = canvas.height - 32;
             return true;
         }
     }
+
+
+
 
     return false;
 }
@@ -513,18 +617,86 @@ function endGame() {
     if (document.removeEventListener) {
         document.removeEventListener('keydown', k)
     }
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-    ctx.fillText('Score: ' + score, (canvas.width - 100) / 2, (canvas.height - 20) / 2);
+    ctx.drawImage(image[6], 0, 0);
     return true;
 }
 
+
 function renderMap2() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if ((player.y) <= 155 && (player.y) >= 125) { //left
+        if ((player.x) <= 20 && (player.x) >= 0) {
+            ctx.font = 'bolder 10px Courier New';
+            ctx.fillStyle = 'white';
+            ctx.fillText('Press E to destroy the computer!', 10, 30);
+
+            if (69 in keyclick) {
+                firstLap = true;
+            }
+        }
+    }
+
+
+    if ((player.y) <= 10 && (player.y) >= 0) { //left
+        if ((player.x) <= 357 && (player.x) >= 325) {
+            ctx.font = 'bolder 10px Courier New';
+            ctx.fillStyle = 'white';
+            ctx.fillText('Press E to destroy the computer!', 10, 30);
+
+            if (69 in keyclick) {
+                secondLap = true;
+            }
+        }
+    }
+
+    scanner.drawEllipse();
+
+    var k = (Math.pow(((player.x) - scanner.x), 2) / Math.pow(scanner.radiusX, 2))
+        + (Math.pow((player.y - scanner.y), 2) / Math.pow(scanner.radiusY, 2));
+
+    if (k <= 1.1) {
+        if (endGame()) {
+            window.cancelAnimationFrame(renderMap2);
+            end = true;
+            return;
+
+        }
+    }
+
+    if (firstLap) {
+        if (score != 2)
+            score = 1;
+        else {
+            
+        }
+    }
+
+    if (secondLap) {
+        if (score!=0)
+            score = 2;
+        else
+            score = 1;
+    }
+
+    if (firstLap && secondLap) {
+        endGameWin();
+    }
+
+    collisionMap2();
+
+    ctx.font = 'bolder 15px Courier New';
     ctx.fillStyle = 'white';
-    ctx.fillText('HELOO: ', (canvas.width - 100) / 2, (canvas.height - 20) / 2);
+    ctx.fillText(score + ': computer is down.', 10, 15);
+    ctx.drawImage(image[1], 0, player.pacdir, 32, 32, player.x, player.y, 32, 32);
+
+}
+
+function endGameWin() {
+    if (document.removeEventListener) {
+        document.removeEventListener('keydown', k);
+    }
+
+    end = true;
 }
 
 function firstEnemyPath() {
@@ -618,10 +790,43 @@ function thirdEnemyPath() {
 }
 
 function forthEnemyPath() {
+    for (var i = 0; i < 300; i++) {
+        MainEnemyObj.en4.enemyPath.push([520 - i, MainEnemyObj.en4.y, MainEnemyObj.en4.enemyeye = 64])
+    }
 
+    for (var i = 0; i <= 50; i++) {
+        MainEnemyObj.en4.enemyPath.push([220, MainEnemyObj.en4.y, MainEnemyObj.en4.enemyeye = 32])
+    }
+
+    for (var i = 0; i < 300; i++) {
+        MainEnemyObj.en4.enemyPath.push([220 + i, MainEnemyObj.en4.y, MainEnemyObj.en4.enemyeye = 32])
+    }
+
+    for (var i = 0; i <= 50; i++) {
+        MainEnemyObj.en4.enemyPath.push([520, MainEnemyObj.en4.y, MainEnemyObj.en4.enemyeye = 64])
+    }
 }
-function fCamPath() {
 
+function fifthEnemyPath() {
+    for (var i = 1; i <= 200; i++) {
+        MainEnemyObj.en5.enemyPath.push([MainEnemyObj.en5.x, 310 - i, MainEnemyObj.en5.enemyeye = 96])
+    }
+
+    MainEnemyObj.en5.x -= 5;
+
+    for (var i = 0; i <= 100; i++) {
+        MainEnemyObj.en5.enemyPath.push([MainEnemyObj.en5.x, 110, MainEnemyObj.en5.enemyeye = 96])
+    }
+
+    MainEnemyObj.en5.x += 5;
+
+    for (var i = 1; i <= 200; i++) {
+        MainEnemyObj.en5.enemyPath.push([MainEnemyObj.en5.x, 110 + i, MainEnemyObj.en5.enemyeye = 0])
+    }
+
+    for (var i = 0; i <= 100; i++) {
+        MainEnemyObj.en5.enemyPath.push([MainEnemyObj.en5.x, 310, MainEnemyObj.en5.enemyeye = 0])
+    }
 }
 
 function collisionMap1() {
@@ -860,4 +1065,152 @@ function collisionMap1() {
             player.x = 100;
         }
     }
+}
+
+function collisionMap2() {
+
+    if ((player.y) <= 355 && (player.y) >= 350) { // bottom out
+        if ((player.x) <= 470 && (player.x) >= 170) {
+            player.y = 360;
+        }
+
+    }
+
+    if ((player.y) <= 230 && (player.y) >= 55) { // right out
+        if ((player.x) <= 495 && (player.x) >= 490) {
+            player.x = 500;
+        }
+
+    }
+
+    if ((player.y) <= 330 && (player.y) >= 285) { // right out
+        if ((player.x) <= 495 && (player.x) >= 490) {
+            player.x = 500;
+        }
+
+    }
+
+    if ((player.y) <= 30 && (player.y) >= 25) { // top out
+        if ((player.x) <= 470 && (player.x) >= 365) {
+            player.y = 20;
+        }
+
+    }
+
+    if ((player.y) <= 55 && (player.y) >= 0) { // right out
+        if ((player.x) <= 365 && (player.x) >= 360) {
+            player.x = 370;
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if ((player.y) <= 330 && (player.y) >= 325) { // bottom in
+        if ((player.x) <= 470 && (player.x) >= 170) {
+            player.y = 320;
+        }
+
+    }
+
+    if ((player.y) <= 230 && (player.y) >= 55) { // right in
+        if ((player.x) <= 480 && (player.x) >= 475) {
+            player.x = 470;
+        }
+
+    }
+
+    if ((player.y) <= 330 && (player.y) >= 285) { // right in
+        if ((player.x) <= 480 && (player.x) >= 475) {
+            player.x = 470;
+        }
+
+    }
+
+    if ((player.y) <= 45 && (player.y) >= 40) { // top in
+        if ((player.x) <= 470 && (player.x) >= 360) {
+            player.y = 50;
+        }
+
+    }
+
+    if ((player.y) <= 55 && (player.y) >= 0) { // right in
+        if ((player.x) <= 345 && (player.x) >= 340) {
+            player.x = 335;
+        }
+
+    }
+
+
+    if ((player.y) <= 60 && (player.y) >= 0) { //left
+        if ((player.x) <= 250 && (player.x) >= 245) {
+            player.x = 255;
+        }
+    }
+
+
+    if ((player.y) <= 65 && (player.y) >= 60) { // bottom in
+        if ((player.x) <= 250 && (player.x) >= 105) {
+            player.y = 70;
+        }
+
+    }
+
+    if ((player.y) <= 125 && (player.y) >= 55) { // right in
+        if ((player.x) <= 105 && (player.x) >= 100) {
+            player.x = 110;
+        }
+
+    }
+
+    if ((player.y) <= 130 && (player.y) >= 125) { // right in
+        if ((player.x) <= 105 && (player.x) >= 0) {
+            player.y = 135;
+        }
+
+    }
+
+    if ((player.y) <= 210 && (player.y) >= 205) { // right in
+        if ((player.x) <= 105 && (player.x) >= 0) {
+            player.y = 215;
+        }
+
+    }
+
+    if ((player.y) <= 350 && (player.y) >= 205) { // right in
+        if ((player.x) <= 100 && (player.x) >= 95) {
+            player.x = 90;
+        }
+
+    }
+
+    if ((player.y) <= 355 && (player.y) >= 350) { // right in
+        if ((player.x) <= 140 && (player.x) >= 100) {
+            player.y = 360;
+        }
+
+    }
+
+    if ((player.y) <= 175 && (player.y) >= 170) { // bottom in
+        if ((player.x) <= 105 && (player.x) >= 0) {
+            player.y = 165;
+        }
+
+    }
+
+    if ((player.y) <= 320 && (player.y) >= 170) { // bottom left
+        if ((player.x) <= 105 && (player.x) >= 100) {
+            player.x = 110;
+        }
+
+    }
+
+    if ((player.y) <= 320 && (player.y) >= 315) { // bottom left
+        if ((player.x) <= 140 && (player.x) >= 110) {
+            player.y = 310;
+        }
+
+    }
+
+
 }
