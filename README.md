@@ -26,7 +26,7 @@ Html, Canvas, JavaScript, jQuery library.
 
 ## **-  Installation instructions:**
 
-
+https://ibrahimvis.github.io/GAProject-MGS-Game/
 
 ## **- Game Instructions:**
 
